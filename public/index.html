@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Substation Logbook - Login</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-header">
+            <div class="logo">
+                <svg width="60" height="60" viewBox="0 0 60 60">
+                    <circle cx="30" cy="30" r="28" fill="#007bff" opacity="0.1"/>
+                    <path d="M30 10 L50 30 L30 50 L10 30 Z" fill="none" stroke="#007bff" stroke-width="3"/>
+                    <circle cx="30" cy="30" r="8" fill="#007bff"/>
+                </svg>
+            </div>
+            <h1>Substation Logbook System</h1>
+            <p>SDSC SHAR - Construction & Maintenance Group</p>
+        </div>
+
+        <div class="login-tabs">
+            <button class="tab-button active" data-tab="admin">Admin / Engineer</button>
+            <button class="tab-button" data-tab="substation">Substation</button>
+        </div>
+
+        <!-- Admin/Engineer Login Form -->
+        <div class="login-form-container active" id="admin-login">
+            <form id="adminLoginForm" class="login-form">
+                <div class="form-group">
+                    <label for="admin-username">Username</label>
+                    <input type="text" id="admin-username" name="username" required autocomplete="username">
+                </div>
+                
+                <div class="form-group">
+                    <label for="admin-password">Password</label>
+                    <input type="password" id="admin-password" name="password" required autocomplete="current-password">
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <span class="btn-text">Login</span>
+                        <span class="btn-loader" style="display: none;">
+                            <span class="spinner"></span>
+                        </span>
+                    </button>
+                </div>
+
+                <div class="alert" id="admin-alert" style="display: none;"></div>
+            </form>
+        </div>
+
+        <!-- Substation Login Form -->
+        <div class="login-form-container" id="substation-login">
+            <form id="substationLoginForm" class="login-form">
+                <div class="form-group">
+                    <label for="substation-code">Substation Code</label>
+                    <input type="text" id="substation-code" name="substation_code" required autocomplete="username">
+                </div>
+                
+                <div class="form-group">
+                    <label for="substation-password">Password</label>
+                    <input type="password" id="substation-password" name="password" required autocomplete="current-password">
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <span class="btn-text">Login</span>
+                        <span class="btn-loader" style="display: none;">
+                            <span class="spinner"></span>
+                        </span>
+                    </button>
+                </div>
+
+                <div class="alert" id="substation-alert" style="display: none;"></div>
+            </form>
+        </div>
+
+        <div class="login-footer">
+            <p>&copy; 2026 ISRO - SDSC SHAR. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+</body>
+</html>
