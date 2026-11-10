@@ -1,0 +1,14 @@
+{
+  "name": "Wintek R&D Expense Tracker",
+  "short_name": "R&D Expenses",
+  "description": "Project-wise R&D expenditure, bills and payments for Wintek Solutions",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f6f9",
+  "theme_color": "#0f4c81",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

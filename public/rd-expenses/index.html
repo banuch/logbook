@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f4c81">
+<title>Wintek R&amp;D Expenses</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <img src="icon.svg" alt="" width="28" height="28">
+    <div>
+      <strong>Wintek R&amp;D Expenses</strong>
+      <small>Project-wise expenditure, bills &amp; payments</small>
+    </div>
+  </div>
+  <button class="btn primary" id="btn-add-expense" type="button">+ Expense</button>
+</header>
+
+<nav class="tabs" role="tablist">
+  <button data-view="dashboard" class="active" type="button">Dashboard</button>
+  <button data-view="expenses" type="button">Expenses</button>
+  <button data-view="projects" type="button">Projects</button>
+  <button data-view="reports" type="button">Reports</button>
+  <button data-view="settings" type="button">Settings</button>
+</nav>
+
+<main>
+  <!-- DASHBOARD -->
+  <section id="view-dashboard" class="view active">
+    <div class="stats" id="dash-stats"></div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Spend vs budget by project</h3>
+        <div id="dash-projects"></div>
+      </div>
+      <div class="card">
+        <h3>Spend by category</h3>
+        <div id="dash-categories"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Monthly spend (last 12 months)</h3>
+      <div id="dash-monthly" class="monthly"></div>
+    </div>
+    <div class="card">
+      <h3>Recent expenses</h3>
+      <div id="dash-recent"></div>
+    </div>
+  </section>
+
+  <!-- EXPENSES -->
+  <section id="view-expenses" class="view">
+    <div class="card filters">
+      <input type="search" id="f-search" placeholder="Search item, vendor, invoice…">
+      <select id="f-project"></select>
+      <select id="f-category"></select>
+      <select id="f-status">
+        <option value="">All payment statuses</option>
+      </select>
+      <label>From <input type="date" id="f-from"></label>
+      <label>To <input type="date" id="f-to"></label>
+      <button class="btn" id="f-clear" type="button">Clear</button>
+    </div>
+    <div class="summary-line" id="exp-summary"></div>
+    <div id="exp-list"></div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="view-projects" class="view">
+    <div class="row-end"><button class="btn primary" id="btn-add-project" type="button">+ Project</button></div>
+    <div id="proj-list" class="proj-grid"></div>
+  </section>
+
+  <!-- REPORTS -->
+  <section id="view-reports" class="view">
+    <div class="card filters no-print">
+      <select id="r-project"></select>
+      <label>From <input type="date" id="r-from"></label>
+      <label>To <input type="date" id="r-to"></label>
+      <select id="r-group">
+        <option value="category">Group by category</option>
+        <option value="project">Group by project</option>
+        <option value="month">Group by month</option>
+        <option value="vendor">Group by vendor</option>
+        <option value="paidBy">Group by paid by</option>
+      </select>
+      <button class="btn" id="r-csv" type="button">Export CSV</button>
+      <button class="btn" id="r-print" type="button">Print / PDF</button>
+    </div>
+    <div class="card" id="report-out"></div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="view-settings" class="view">
+    <div class="card">
+      <h3>Company</h3>
+      <label class="stack">Company name <input id="s-company"></label>
+      <label class="stack">GSTIN (optional) <input id="s-gstin"></label>
+      <button class="btn primary" id="s-save-company" type="button">Save</button>
+    </div>
+    <div class="card">
+      <h3>Expense categories</h3>
+      <div id="s-categories" class="chips"></div>
+      <div class="inline">
+        <input id="s-new-cat" placeholder="New category">
+        <button class="btn" id="s-add-cat" type="button">Add</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>People who pay (for reimbursement)</h3>
+      <div id="s-people" class="chips"></div>
+      <div class="inline">
+        <input id="s-new-person" placeholder="Name">
+        <button class="btn" id="s-add-person" type="button">Add</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Backup &amp; restore</h3>
+      <p class="muted">Data is stored only on this device. Take a backup regularly. The backup file includes bill images.</p>
+      <div class="inline">
+        <button class="btn primary" id="s-backup" type="button">Download backup (.json)</button>
+        <label class="btn">Restore backup<input type="file" id="s-restore" accept="application/json,.json" hidden></label>
+      </div>
+      <p class="muted" id="s-storage"></p>
+    </div>
+  </section>
+</main>
+
+<!-- Expense dialog -->
+<dialog id="dlg-expense">
+  <form method="dialog" id="form-expense">
+    <h2 id="dlg-expense-title">Add expense</h2>
+    <div class="form-grid">
+      <label>Date* <input type="date" name="date" required></label>
+      <label>Project* <select name="projectId" required></select></label>
+      <label>Category* <select name="category" required></select></label>
+      <label class="span2">Item / description* <input name="item" required placeholder="e.g. ESP32-WROOM-32E module"></label>
+      <label>Vendor <input name="vendor" list="vendor-list" placeholder="e.g. Robu.in"></label>
+      <label>Invoice / bill no. <input name="invoiceNo"></label>
+      <label>Quantity <input type="number" name="qty" min="0" step="any" value="1"></label>
+      <label>Unit price (₹) <input type="number" name="unitPrice" min="0" step="0.01" value="0"></label>
+      <label>GST % <select name="gst">
+        <option value="0">0</option><option value="5">5</option><option value="12">12</option>
+        <option value="18" selected>18</option><option value="28">28</option>
+      </select></label>
+      <label>Shipping / other (₹) <input type="number" name="shipping" min="0" step="0.01" value="0"></label>
+      <div class="span2 total-box">Total: <strong id="exp-total">₹0.00</strong> <small id="exp-breakup"></small></div>
+      <label>Payment mode <select name="paymentMode"></select></label>
+      <label>Payment status <select name="paymentStatus"></select></label>
+      <label>Paid by <input name="paidBy" list="people-list" placeholder="Company / person"></label>
+      <label>Payment ref (UTR / txn id) <input name="paymentRef"></label>
+      <label class="span2">Notes <textarea name="notes" rows="2"></textarea></label>
+      <div class="span2">
+        <div class="bills-head">
+          <span>Bills / invoices</span>
+          <label class="btn small">📷 Camera<input type="file" id="bill-camera" accept="image/*" capture="environment" hidden></label>
+          <label class="btn small">📎 Files<input type="file" id="bill-files" accept="image/*,application/pdf" multiple hidden></label>
+        </div>
+        <div id="bill-preview" class="bill-preview"></div>
+      </div>
+    </div>
+    <div class="dlg-actions">
+      <button type="button" class="btn danger" id="exp-delete" hidden>Delete</button>
+      <span class="spacer"></span>
+      <button type="button" class="btn" value="cancel" id="exp-cancel">Cancel</button>
+      <button type="submit" class="btn primary" value="save">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Project dialog -->
+<dialog id="dlg-project">
+  <form method="dialog" id="form-project">
+    <h2 id="dlg-project-title">Add project</h2>
+    <div class="form-grid">
+      <label>Project code* <input name="code" required placeholder="e.g. WT-IOT-01"></label>
+      <label>Project name* <input name="name" required placeholder="e.g. Smart Energy Meter"></label>
+      <label>Budget (₹) <input type="number" name="budget" min="0" step="1" value="0"></label>
+      <label>Status <select name="status">
+        <option>Active</option><option>On hold</option><option>Completed</option>
+      </select></label>
+      <label>Start date <input type="date" name="startDate"></label>
+      <label>Funding / client <input name="client" placeholder="Internal, grant, customer…"></label>
+      <label class="span2">Description <textarea name="description" rows="2"></textarea></label>
+    </div>
+    <div class="dlg-actions">
+      <button type="button" class="btn danger" id="proj-delete" hidden>Delete</button>
+      <span class="spacer"></span>
+      <button type="button" class="btn" id="proj-cancel">Cancel</button>
+      <button type="submit" class="btn primary">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Bill viewer -->
+<dialog id="dlg-bill" class="bill-viewer">
+  <div id="bill-view-body"></div>
+  <div class="dlg-actions"><span class="spacer"></span><button class="btn" id="bill-close" type="button">Close</button></div>
+</dialog>
+
+<datalist id="vendor-list"></datalist>
+<datalist id="people-list"></datalist>
+<div id="toast" class="toast" role="status"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

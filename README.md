@@ -8,6 +8,8 @@ A comprehensive web-based logbook management system for electrical substations a
 
 👉 **See [FEATURES.md](FEATURES.md) for complete feature documentation and user guide.**
 
+> 💼 **New:** an offline R&D expense tracker for Wintek Solutions is in [`public/rd-expenses/`](public/rd-expenses/README.md), served at `/rd-expenses/`.
+
 New additions include:
 - ✅ Technicians Management Page (Full CRUD)
 - ✅ Substations Management Page (Full CRUD)  
